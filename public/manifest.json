@@ -1,0 +1,26 @@
+{
+  "name": "NMT Daily — щоденне повторення",
+  "short_name": "NMT Daily",
+  "description": "Щоденне повторення знань для підготовки до НМТ: 3, 5 або 10 завдань раз на 24 години, зірки, вогник і прогрес.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f8fafc",
+  "theme_color": "#7c3aed",
+  "lang": "uk",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

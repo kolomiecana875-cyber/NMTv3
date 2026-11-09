@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    font-family:
+      "Inter",
+      "Segoe UI",
+      "Helvetica Neue",
+      Arial,
+      "Noto Sans",
+      sans-serif;
+    background-color: #f8fafc;
+  }
+
+  ::selection {
+    background: #ddd6fe;
+    color: #4c1d95;
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
