@@ -1,6 +1,7 @@
 import {
   ArrowRight,
   CheckCircle2,
+  Coins,
   Flame,
   Lightbulb,
   Sparkles,
@@ -15,6 +16,9 @@ interface Props {
   session: DailySession;
   onAnswer: (index: number) => void;
   onNext: () => void;
+  mode?: "daily" | "practice";
+  /** Зароблені монети — показуються в режимі тренування. */
+  coins?: number;
 }
 
 const LETTERS = ["A", "B", "C", "D"];
@@ -31,7 +35,8 @@ const DIFFICULTY_STYLE: Record<Difficulty, string> = {
   hard: "bg-rose-50 text-rose-700 ring-rose-100",
 };
 
-export function DailyQuiz({ session, onAnswer, onNext }: Props) {
+export function DailyQuiz({ session, onAnswer, onNext, mode = "daily", coins = 0 }: Props) {
+  const practice = mode === "practice";
   const question = session.questions[session.currentIndex];
   const answer = question
     ? session.answers.find((item) => item.questionId === question.id)
@@ -56,22 +61,34 @@ export function DailyQuiz({ session, onAnswer, onNext }: Props) {
       <div className="mb-4 rounded-2xl bg-white/80 p-4 shadow-sm ring-1 ring-slate-200/70 backdrop-blur">
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-slate-600">
           <span>
-            Завдання {session.currentIndex + 1} з {session.questions.length}
+            {practice ? "Тренування" : "Завдання"} {session.currentIndex + 1} з{" "}
+            {session.questions.length}
           </span>
           <div className="flex items-center gap-3">
             <span className="inline-flex items-center gap-1 text-emerald-700">
               <CheckCircle2 className="h-3.5 w-3.5" />
               {correctCount} {pluralCorrect(correctCount)}
             </span>
-            <span className="inline-flex items-center gap-1 text-amber-600">
-              <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-              {session.count} {pluralStars(session.count)} за проходження
-            </span>
+            {practice ? (
+              <span className="inline-flex items-center gap-1 text-amber-600">
+                <Coins className="h-3.5 w-3.5" />
+                +{coins} монет
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 text-amber-600">
+                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                {session.count} {pluralStars(session.count)} за проходження
+              </span>
+            )}
           </div>
         </div>
         <div className="h-2.5 overflow-hidden rounded-full bg-slate-100">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-violet-600 via-fuchsia-500 to-cyan-500 transition-all duration-500"
+            className={`h-full rounded-full transition-all duration-500 ${
+              practice
+                ? "bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500"
+                : "bg-gradient-to-r from-violet-600 via-fuchsia-500 to-cyan-500"
+            }`}
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -162,7 +179,11 @@ export function DailyQuiz({ session, onAnswer, onNext }: Props) {
                 </div>
                 <div className="min-w-0">
                   <p className="mb-1 text-sm font-extrabold text-slate-900">
-                    {answer?.correct ? "Правильно! +1 зірка" : "Правильна відповідь — інша"}
+                    {answer?.correct
+                      ? practice
+                        ? "Правильно! Монети нараховано"
+                        : "Правильно! +1 зірка"
+                      : "Правильна відповідь — інша"}
                   </p>
                   <p className="text-sm leading-relaxed text-slate-700">{question.explanation}</p>
                   {!answer?.correct && (
@@ -182,7 +203,11 @@ export function DailyQuiz({ session, onAnswer, onNext }: Props) {
                   onClick={onNext}
                   className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-slate-900/20 transition hover:bg-slate-800 active:scale-[0.99]"
                 >
-                  {isLast ? "Завершити та отримати зірки" : "Наступне завдання"}
+                  {isLast
+                    ? practice
+                      ? "Завершити тренування"
+                      : "Завершити та отримати зірки"
+                    : "Наступне завдання"}
                   {isLast ? <Sparkles className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
                 </button>
               </div>
@@ -192,8 +217,10 @@ export function DailyQuiz({ session, onAnswer, onNext }: Props) {
       </div>
 
       <p className="mt-4 text-center text-xs text-slate-500">
-        {session.answers.length} з {session.questions.length} завдань пройдено ·{" "}
-        {session.count} {pluralQuestions(session.count)} у наборі
+        {session.answers.length} з {session.questions.length} завдань пройдено
+        {practice
+          ? ` · +${coins} монет за тренування`
+          : ` · ${session.count} ${pluralQuestions(session.count)} у наборі`}
       </p>
     </div>
   );
